@@ -1,0 +1,16 @@
+body {
+    background: #ffdacc !important;
+}
+
+.btn-primary {
+    background-color: #ffbca6;
+    border-color: #ffbca6;
+}
+.btn-success {
+    background-color: #89c195;
+    border-color: #89c195;
+}
+
+.form-row{
+    margin-top: 1rem;
+}
