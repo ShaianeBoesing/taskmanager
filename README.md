@@ -28,7 +28,7 @@
 
 ### Acesse a porta aberta através do php artisan serve e divirta-se! 
 
-## Autor
+## Um projeto desenvolvido por
 
 - [@ShaianeBoesing](https://github.com/ShaianeBoesing)
 
