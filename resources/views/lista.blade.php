@@ -51,7 +51,10 @@
             rules: {
                 nome: 'required',
                 inicio: 'required',
-                fim: 'required',
+                fim: {
+                    required: true,
+                    dataFinal: true
+                }
             },
             messages: {
                 nome: {
@@ -70,6 +73,10 @@
 
         $(document).ready(function () {
             carregaTabela();
+            $.validator.addMethod("dataFinal", function (value, element) {
+                let inicio = $('#inicio').val()
+                return value >= inicio
+            }, "<span style='color: red'> Data final deve ser maior ou igual a data inicial </span>");
 
         })
 

@@ -71,41 +71,51 @@
 @endsection
 @section('scripts')
     <script>
+        $(document).ready(function (){
+            $.validator.addMethod("dataFinal", function(value, element) {
+                let inicio = $('#inicio').val()
+                return value >= inicio
+            }, "<span style='color: red'> Data final deve ser maior ou igual a data inicial </span>");
 
-        let regras = {
-            debug: true,
-            rules: {
-                nome: 'required',
-                inicio: 'required',
-                fim: 'required',
-            },
-            messages: {
-                nome: {
-                    required: "<span style='color: red'>Informe o nome do projeto</span>",
+            var regras = {
+                debug: true,
+                rules: {
+                    nome: 'required',
+                    inicio: 'required',
+                    fim: {
+                        required: true,
+                        dataFinal: true
+                    }
                 },
-                inicio: {
-                    required: "<span style='color: red'>Informe a data inicial</span>",
-                    min: "<span style='color: red'>Data deve ser maior que a atual</span>"
-                },
-                fim: {
-                    required: "<span style='color: red'>Informe a data final</span>",
-                    min: "<span style='color: red'>Data deve ser maior que a atual</span>"
+                messages: {
+                    nome: {
+                        required: "<span style='color: red'>Informe o nome do projeto</span>",
+                    },
+                    inicio: {
+                        required: "<span style='color: red'>Informe a data inicial</span>",
+                        min: "<span style='color: red'>Data deve ser maior que atual</span>"
+                    },
+                    fim: {
+                        required: "<span style='color: red'>Informe a data final</span>",
+                        min: "<span style='color: red'>Data deve ser maior que a atual</span>",
+                    }
                 }
             }
-        }
 
-        $("#btn_salvar").on("click", function () {
-            form = $("#form_projeto")
-            form.validate(regras);
-            if (form.valid()) {
-                let projeto = $("#projeto_id").val();
-                let dados = $('#form_projeto').serializeArray();
-                if (projeto) {
-                    editar(dados, projeto)
-                } else {
-                    criar(dados)
+            $("#btn_salvar").on("click", function () {
+                form = $("#form_projeto")
+                form.validate(regras);
+                if (form.valid()) {
+
+                    let projeto = $("#projeto_id").val();
+                    let dados = $('#form_projeto').serializeArray();
+                    if (projeto) {
+                        editar(dados, projeto)
+                    } else {
+                        criar(dados)
+                    }
                 }
-            }
+            })
         })
 
         function criar(dados) {
