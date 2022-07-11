@@ -109,7 +109,6 @@
         })
 
         function criar(dados) {
-            console.log('criar')
             $.ajax({
                 type: 'POST',
                 url: '/projeto/novo',
@@ -128,7 +127,6 @@
         }
 
         function editar(dados, id) {
-            console.log('edit')
             $.ajax({
                 type: 'PUT',
                 url: `/projeto/editar/${id}`,

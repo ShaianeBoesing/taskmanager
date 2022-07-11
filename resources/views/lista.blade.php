@@ -103,7 +103,6 @@
         }
 
         function carregaTabelaModal(projetoId) {
-            console.log(projetoId)
             $.ajax({
                 type: 'GET',
                 url: `/tarefa/busca/${projetoId}`,
