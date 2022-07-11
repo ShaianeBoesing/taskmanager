@@ -16,7 +16,7 @@
                                 <div class="col-4">
                                     <input type="hidden" id="projeto_id" name="projeto_id" class="form-control"/>
                                     <div class="form-outline">
-                                        <input type="text" id="nome" name="nome" class="form-control" placeholder="Nome"/>
+                                        <input type="text" id="nome" name="nome" class="form-control" placeholder="Nome da Tarefa"/>
                                     </div>
                                 </div>
                                 <div class="col-3">
@@ -33,7 +33,7 @@
                                 </div>
                                 <div class="col-2">
                                     <div class="form-outline">
-                                        <button type="button" id="btn_salvar" class="btn btn-success">
+                                        <button type="button" id="btn_salvar" class="btn btn-success" title="Adicionar Tarefa">
                                             +
                                         </button>
                                     </div>

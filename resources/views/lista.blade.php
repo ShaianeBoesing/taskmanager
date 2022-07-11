@@ -91,7 +91,7 @@
                         <td colspan="2">
                             <button class="btn-primary ver"
                                     data-name="${r[key].nome}"
-                                    data-id=${key}>Ver</button>
+                                    data-id=${key}>Tarefas</button>
                             <button class="btn-primary editar"
                                     data-id=${key}>Editar</button>
                             <button class="btn-primary excluir"
@@ -116,7 +116,7 @@
                             <td>${value.inicio}</td>
                             <td>${value.fim ?? ''}</td>
                             <td>
-                                <input type="checkbox" name="status" id="status" data-id=${key} ${(value.status) ? 'checked' : ''} >
+                                <input type="checkbox" name="status" id="status" data-id=${key} ${(value.status) ? 'checked' : 'title="Finalizar Tarefa"'} >
                             </td>
                             <td>
                                 <button class="btn-primary excluir-tarefa"
@@ -135,7 +135,7 @@
             let projetoId = $(this).data('id')
             let projetoNome = $(this).data('name')
             $("#projeto_id").val(projetoId)
-            $(".modal-title").text(projetoNome)
+            $(".modal-title").text('Tarefas - ' + projetoNome)
             carregaTabelaModal(projetoId)
         })
 
