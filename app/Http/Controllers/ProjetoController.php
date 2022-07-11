@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Projeto;
 use App\Models\Tarefa;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -19,9 +20,35 @@ class ProjetoController extends Controller
 
     public function index()
     {
-        $projetos = $this->buscarProjetos();
+        return view('lista');
+    }
 
-        return view('lista_projetos', compact('projetos'));
+    public function listar()
+    {
+        try {
+            $projetos = $this->buscarProjetos();
+        } catch (\Exception $exception) {
+            $message = 'Ocorreu um problema ao carregar os dados';
+            Log::error($message . $exception->getMessage());
+
+            $projetos = [];
+
+        }
+        return $projetos;
+    }
+
+    public function formulario($id = null)
+    {
+        $projeto = [];
+        if ($id) {
+            $projeto = $this->buscarProjeto($id);
+            $projeto->inicio = $projeto->getAttribute('inicio')?
+                Carbon::parse($projeto->inicio)->format('Y-m-d'):'';
+            $projeto->fim = $projeto->getAttribute('fim')?
+                Carbon::parse($projeto->fim)->format('Y-m-d'):'';
+
+        }
+        return view('formulario', compact('projeto'));
     }
 
     public function novo(Request $data)
@@ -36,25 +63,19 @@ class ProjetoController extends Controller
 
             $projeto->save();
 
-            $response = response(['status' => 'success',
-                'message' => 'Projeto criado com sucesso'
-            ])->setStatusCode(200);
+            $response = response('Projeto criado com sucesso')->setStatusCode(200);
 
         } catch (\Exception $exception) {
-            $message = 'Ocorreu uma exceção ao criar seu projeto';
+            $message = 'Não foi possível criar seu projeto';
             Log::error($message . $exception->getMessage());
 
-            $response = response(['status' => 'error',
-                'message' => $message
-            ])->setStatusCode(500);
+            $response = response($message)->setStatusCode(500);
 
         } catch (\Error $error) {
-            $message = 'Ocorreu um erro ao criar seu projeto';
+            $message = 'Não foi possível criar seu projeto';
             Log::error($message . $error->getMessage());
 
-            $response = response(['status' => 'error',
-                'message' => $message
-            ])->setStatusCode(500);
+            $response = response($message)->setStatusCode(500);
 
         } finally {
             return $response;
@@ -67,17 +88,13 @@ class ProjetoController extends Controller
             $projeto = $this->buscarProjeto($id);
             $projeto->delete();
 
-            return response(['status' => 'success',
-                'message' => 'Projeto deletado com sucesso'
-            ])->setStatusCode(200);
+            return response('Projeto deletado com sucesso')->setStatusCode(200);
 
         } catch (\Throwable $exception) {
-            $message = 'Ocorreu um erro ao deletar seu projeto';
+            $message = 'Não foi possível deletar seu projeto';
             Log::error($message . $exception->getMessage());
 
-            return response(['status' => 'error',
-                'message' => $message
-            ])->setStatusCode(500);
+            return response($message)->setStatusCode(500);
         }
     }
 
@@ -88,25 +105,19 @@ class ProjetoController extends Controller
             $projeto = $this->buscarProjeto($id);
             $projeto->update($data);
 
-            $response = response(['status' => 'success',
-                'message' => 'Projeto editado com sucesso'
-            ])->setStatusCode(200);
+            $response = response('Projeto editado com sucesso')->setStatusCode(200);
 
         } catch (\Exception $exception) {
-            $message = 'Ocorreu uma exceção ao editar seu projeto';
+            $message = 'Não foi possível editar seu projeto';
             Log::error($message . $exception->getMessage());
 
-            $response = response(['status' => 'error',
-                'message' => $message
-            ])->setStatusCode(500);
+            $response = response($message)->setStatusCode(500);
 
         } catch (\Error $error) {
-            $message = 'Ocorreu um erro ao editar seu projeto';
+            $message = 'Não foi possível editar seu projeto';
             Log::error($message . $error->getMessage());
 
-            $response = response(['status' => 'error',
-                'message' => $message
-            ])->setStatusCode(500);
+            $response = response($message)->setStatusCode(500);
 
         } finally {
             return $response;
@@ -129,9 +140,20 @@ class ProjetoController extends Controller
         $projetos = [];
 
         foreach ($this->projetos as $projeto) {
+
+            $fim = $projeto->getAttribute('fim')?Carbon::createFromFormat(
+                'Y-m-d',
+                $projeto->getAttribute('fim')
+            )->format('d/m/Y'):'';
+
+            $inicio = $projeto->getAttribute('inicio')?Carbon::createFromFormat(
+                'Y-m-d',
+                $projeto->getAttribute('inicio')
+            )->format('d/m/Y'):'';
+
             $projetos[$projeto->getAttribute('id')] = ['nome' => $projeto->getAttribute('nome'),
-                'inicio' => $projeto->getAttribute('inicio'),
-                'fim' => $projeto->getAttribute('fim'),
+                'inicio' => $inicio,
+                'fim' => $fim,
                 'atraso' => $projeto->emAtraso(),
                 'percentagem' => $projeto->percentagemCompleto(),
                 'tarefas' => $projeto->buscarTarefas()];
@@ -148,25 +170,19 @@ class ProjetoController extends Controller
 
             $projeto->criarTarefa($data);
 
-            $response = response(['status' => 'success',
-                'message' => 'Tarefa criada com sucesso'
-            ])->setStatusCode(200);
+            $response = response('Tarefa criada com sucesso')->setStatusCode(200);
 
         } catch (\Exception $exception) {
-            $message = 'Ocorreu uma exceção ao criar sua tarefa';
+            $message = 'Não foi possível criar esta tarefa';
             Log::error($message . $exception->getMessage());
 
-            $response = response(['status' => 'error',
-                'message' => $message
-            ])->setStatusCode(500);
+            $response = response($message)->setStatusCode(500);
 
         } catch (\Error $error) {
-            $message = 'Ocorreu um erro ao criar sua tarefa';
+            $message = 'Não foi possível criar esta tarefa';
             Log::error($message . $error->getMessage());
 
-            $response = response(['status' => 'error',
-                'message' => $message
-            ])->setStatusCode(500);
+            $response = response($message)->setStatusCode(500);
 
         } finally {
             return $response;
@@ -182,23 +198,17 @@ class ProjetoController extends Controller
             $projeto = $this->buscarProjeto($projeto_id);
             $projeto->deletarTarefa($tarefa);
 
-            $response = response(['status' => 'success',
-                'message' => 'Tarefa deletada com sucesso'
-            ])->setStatusCode(200);
+            $response = response('Tarefa deletada com sucesso')->setStatusCode(200);
         } catch (\Exception $exception) {
             $message = 'Ocorreu uma exceção ao deletar sua tarefa';
             Log::error($message . $exception->getMessage());
 
-            $response = response(['status' => 'error',
-                'message' => $message
-            ])->setStatusCode(500);
+            $response = response($message)->setStatusCode(500);
         } catch (\Error $error) {
-            $message = 'Ocorreu um erro ao deletar sua tarefa';
+            $message = 'Não foi possível deletar sua tarefa';
             Log::error($message . $error->getMessage());
 
-            $response = response(['status' => 'error',
-                'message' => $message
-            ])->setStatusCode(500);
+            $response = response($message)->setStatusCode(500);
         } finally {
             return $response;
         }
@@ -211,29 +221,49 @@ class ProjetoController extends Controller
             $tarefa = Tarefa::where('id', $id)->first();
             $projeto_id = $tarefa->getAttribute('projeto_id');
             $projeto = $this->buscarProjeto($projeto_id);
-
             $projeto->editarTarefa($tarefa, $data);
 
-            $response = response(['status' => 'success',
-                'message' => 'Tarefa editada com sucesso'
-            ])->setStatusCode(200);
+            $response = response('Tarefa editada com sucesso')->setStatusCode(200);
         } catch (\Exception $exception) {
             $message = 'Ocorreu uma exceção ao editar sua tarefa';
             Log::error($message . $exception->getMessage());
 
-            $response = response(['status' => 'error',
-                'message' => $message
-            ])->setStatusCode(500);
+            $response = response($message)->setStatusCode(500);
         } catch (\Error $error) {
-            $message = 'Ocorreu um erro ao editar sua tarefa';
+            $message = 'Não foi possível editar sua tarefa';
             Log::error($message . $error->getMessage());
 
-            $response = response(['status' => 'error',
-                'message' => $message
-            ])->setStatusCode(500);
+            $response = response($message)->setStatusCode(500);
         } finally {
             return $response;
         }
+    }
+
+    public function buscarTarefas($projeto_id)
+    {
+        $tarefas = [];
+        $projeto = $this->buscarProjeto($projeto_id);
+        foreach ($projeto->tarefas as $tarefa) {
+
+            $fim = $tarefa->getAttribute('fim')?Carbon::createFromFormat(
+                'Y-m-d',
+                $tarefa->getAttribute('fim')
+            )->format('d/m/Y'):'';
+
+            $inicio = $tarefa->getAttribute('inicio')?Carbon::createFromFormat(
+                'Y-m-d',
+                $tarefa->getAttribute('inicio')
+            )->format('d/m/Y'):'';
+
+            $tarefas[$tarefa->getAttribute('id')] = ['nome' => $tarefa->getAttribute('nome'),
+                'inicio' => $inicio,
+                'fim' => $fim,
+                'status' => $tarefa->getAttribute('status'),
+            ];
+        }
+
+        return $tarefas;
+
     }
 
 }

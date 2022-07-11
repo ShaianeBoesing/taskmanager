@@ -62,7 +62,7 @@ class Projeto extends Model
         $tarefa->projeto_id = $this->getAttribute('id');
         $tarefa->nome = $data['nome'];
         $tarefa->inicio = $data['inicio'];
-        $tarefa->fim = '2022-09-12 00:00:00';
+        $tarefa->fim = $data['fim'];
         $tarefa->status = false;
         if ($tarefa->save()) {
             return true;
