@@ -16,8 +16,8 @@ class CriarTabelaProjetos extends Migration
         Schema::create('projetos', function (Blueprint $table) {
             $table->increments('id');
             $table->text('nome');
-            $table->timestamp('inicio')->useCurrent();
-            $table->timestamp('fim')->nullable();
+            $table->date('inicio');
+            $table->date('fim');
         });
     }
 

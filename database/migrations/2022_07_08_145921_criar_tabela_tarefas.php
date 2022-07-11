@@ -18,10 +18,10 @@ class CriarTabelaTarefas extends Migration
             $table->integer('projeto_id')->unsigned();
             $table->foreign('projeto_id')->references('id')
                                                  ->on('projetos')
-                                                 ->onDelete('cascade');;
+                                                 ->onDelete('cascade');
             $table->text('nome');
-            $table->timestamp('inicio')->useCurrent();
-            $table->timestamp('fim')->nullable();
+            $table->date('inicio');
+            $table->date('fim');
             $table->boolean('status')->default(0);
         });
     }
