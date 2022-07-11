@@ -105,7 +105,6 @@
                 } else {
                     criar(dados)
                 }
-                form[0].reset()
             }
         })
 
